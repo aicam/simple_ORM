@@ -59,6 +59,30 @@ func (s *Server) GetCustomers() gin.HandlerFunc {
 	}
 }
 
+func (s *Server) AddPayment() gin.HandlerFunc {
+	return func(context *gin.Context) {
+		var js PaymentTable
+		err := context.BindJSON(&js)
+		if err != nil {
+			WrongParams(context)
+			return
+		}
+		s.DB.Save(&js)
+		context.JSON(http.StatusOK, struct {
+			Status  bool
+			Message string
+		}{Status: true, Message: "Added Successfully"})
+	}
+}
+
+func (s *Server) GetPayments() gin.HandlerFunc {
+	return func(context *gin.Context) {
+		var payments []PaymentTable
+		s.DB.Find(&payments)
+		context.JSON(http.StatusOK, payments)
+	}
+}
+
 func (s *Server) AddAdmin() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		s.DB.Save(&AdminTable{

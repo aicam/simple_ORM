@@ -20,4 +20,8 @@ type CustomersTable struct {
 
 type PaymentTable struct {
 	gorm.Model
+	Customer CustomersTable
+	Amount   int
+	Method   string
+	Comment  string
 }
