@@ -1,10 +1,10 @@
 package server
 
 import (
-"github.com/jinzhu/gorm"
-_ "github.com/jinzhu/gorm/dialects/mysql"
-"log"
-"time"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"log"
+	"time"
 )
 
 // Synchronize database
@@ -26,9 +26,7 @@ func MakeMigrations(connectionString string) *gorm.DB {
 		}
 		retryCount--
 	}
-	db.AutoMigrate(&Admin{})
-	db.AutoMigrate(&Customer{})
+	db.AutoMigrate(&AdminTable{})
+	db.AutoMigrate(&CustomersTable{})
 	return db
 }
-
-

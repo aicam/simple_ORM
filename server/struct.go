@@ -16,7 +16,7 @@ type Server struct {
 
 // Here we create our new server
 func NewServer() *Server {
-	router := gin.Default()
+	router := gin.New()
 	// here we opened cors for all
 	router.Use(cors.Default())
 	return &Server{

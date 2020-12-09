@@ -3,10 +3,11 @@ package server
 import "github.com/jinzhu/gorm"
 
 func CheckAdmin(db *gorm.DB, username string, password string) bool {
-	recordNotFound := db.Where(&Admin{
+	var admin AdminTable
+	recordNotFound := db.Where(&AdminTable{
 		Username: username,
 		Password: password,
-	}).RecordNotFound()
+	}).First(&admin).RecordNotFound()
 	if recordNotFound {
 		return false
 	}
@@ -14,8 +15,8 @@ func CheckAdmin(db *gorm.DB, username string, password string) bool {
 }
 
 func SetAdminToken(db *gorm.DB, username string, token string) {
-	admin := Admin{}
-	db.Where(&Admin{Username:username}).First(&admin)
+	admin := AdminTable{}
+	db.Where(&AdminTable{Username: username}).First(&admin)
 	admin.Token = token
 	db.Save(&admin)
 }
