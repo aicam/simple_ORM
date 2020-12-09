@@ -20,8 +20,8 @@ type CustomersTable struct {
 
 type PaymentTable struct {
 	gorm.Model
-	Customer CustomersTable
-	Amount   int
-	Method   string
-	Comment  string
+	CustomerName string `json:"customer_name"`
+	Amount       int    `json:"amount"`
+	Method       string `json:"method"`
+	Comment      string `json:"comment"`
 }
