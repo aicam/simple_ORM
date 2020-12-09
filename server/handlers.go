@@ -83,6 +83,65 @@ func (s *Server) GetPayments() gin.HandlerFunc {
 	}
 }
 
+func (s *Server) AddProduct() gin.HandlerFunc {
+	return func(context *gin.Context) {
+		var js ProductsTable
+		err := context.BindJSON(&js)
+		if err != nil {
+			WrongParams(context)
+			return
+		}
+		s.DB.Save(&js)
+		context.JSON(http.StatusOK, struct {
+			Status  bool
+			Message string
+		}{Status: true, Message: "Added Successfully"})
+	}
+}
+
+func (s *Server) GetProducts() gin.HandlerFunc {
+	return func(context *gin.Context) {
+		var products []ProductsTable
+		s.DB.Find(&products)
+		context.JSON(http.StatusOK, products)
+	}
+}
+
+func (s *Server) AddOrder() gin.HandlerFunc {
+	return func(context *gin.Context) {
+		var js OrdersTable
+		err := context.BindJSON(&js)
+		if err != nil {
+			WrongParams(context)
+			return
+		}
+		s.DB.Save(&js)
+		context.JSON(http.StatusOK, struct {
+			Status  bool
+			Message string
+		}{Status: true, Message: "Added Successfully"})
+	}
+}
+
+func (s *Server) GetOrders() gin.HandlerFunc {
+	return func(context *gin.Context) {
+		var products []OrdersTable
+		s.DB.Find(&products)
+		context.JSON(http.StatusOK, products)
+	}
+}
+
+func (s *Server) UpdateOrder() gin.HandlerFunc {
+	return func(context *gin.Context) {
+		var js OrdersTable
+		s.DB.Save(&js)
+		context.JSON(http.StatusOK, struct {
+			Status  bool
+			Message string
+		}{Status: true, Message: "Added Successfully"})
+	}
+}
+
 func (s *Server) AddAdmin() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		s.DB.Save(&AdminTable{

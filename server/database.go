@@ -29,5 +29,6 @@ func MakeMigrations(connectionString string) *gorm.DB {
 	db.AutoMigrate(&AdminTable{})
 	db.AutoMigrate(&CustomersTable{})
 	db.AutoMigrate(&PaymentTable{})
+	db.AutoMigrate(&ProductsTable{}, &OrdersTable{})
 	return db
 }
