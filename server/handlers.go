@@ -8,6 +8,21 @@ import (
 	"time"
 )
 
+func (s *Server) CheckToken() gin.HandlerFunc {
+	return func(context *gin.Context) {
+		var status bool
+		var ad AdminTable
+		if s.DB.Where(&AdminTable{Token: context.Param("token")}).First(&ad).RecordNotFound() {
+			status = false
+		} else {
+			status = true
+		}
+		context.JSON(http.StatusOK, struct {
+			Status bool `json:"status"`
+		}{Status: status})
+	}
+}
+
 func (s *Server) AdminLogin() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		var JSONStruct struct {
@@ -19,19 +34,21 @@ func (s *Server) AdminLogin() gin.HandlerFunc {
 			WrongParams(context)
 			return
 		}
-		if !CheckAdmin(s.DB, JSONStruct.Username, JSONStruct.Password) {
+		if !CheckAdmin(s.DB, JSONStruct.Username, JSONStruct.Password) || JSONStruct.Username == "" {
 			context.JSON(http.StatusOK, struct {
+				Status   bool   `json:"status"`
 				Messsage string `json:"messsage"`
-			}{Messsage: "Wrong username or password!"})
+			}{Messsage: "Wrong username or password!", Status: false})
 			return
 		}
 
 		token := sha256.Sum256([]byte(JSONStruct.Username + JSONStruct.Password + time.Now().String()))
 		SetAdminToken(s.DB, JSONStruct.Username, hex.EncodeToString(token[:]))
 		context.JSON(http.StatusOK, struct {
-			Message string
-			Token   string
-		}{Message: "Login successful", Token: hex.EncodeToString(token[:])})
+			Status  bool   `json:"status"`
+			Message string `json:"message"`
+			Token   string `json:"token"`
+		}{Message: "Login successful", Token: hex.EncodeToString(token[:]), Status: true})
 		return
 	}
 }
@@ -134,11 +151,32 @@ func (s *Server) GetOrders() gin.HandlerFunc {
 func (s *Server) UpdateOrder() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		var js OrdersTable
+		err := context.BindJSON(&js)
+		if err != nil {
+			WrongParams(context)
+			return
+		}
 		s.DB.Save(&js)
 		context.JSON(http.StatusOK, struct {
 			Status  bool
 			Message string
-		}{Status: true, Message: "Added Successfully"})
+		}{Status: true, Message: "Updated Successfully"})
+	}
+}
+
+func (s *Server) RemoveOrder() gin.HandlerFunc {
+	return func(context *gin.Context) {
+		var js OrdersTable
+		err := context.BindJSON(&js)
+		if err != nil {
+			WrongParams(context)
+			return
+		}
+		s.DB.Delete(&js)
+		context.JSON(http.StatusOK, struct {
+			Status  bool
+			Message string
+		}{Status: true, Message: "Deleted Successfully"})
 	}
 }
 

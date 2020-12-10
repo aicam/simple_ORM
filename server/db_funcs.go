@@ -1,6 +1,8 @@
 package server
 
-import "github.com/jinzhu/gorm"
+import (
+	"github.com/jinzhu/gorm"
+)
 
 func CheckAdmin(db *gorm.DB, username string, password string) bool {
 	var admin AdminTable
