@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 	"time"
 )
@@ -63,8 +64,9 @@ func (s *Server) AddCustomer() gin.HandlerFunc {
 		}
 		s.DB.Save(&js)
 		context.JSON(http.StatusOK, struct {
-			Status bool
-		}{Status: true})
+			Status  bool
+			Message string `json:"message"`
+		}{Status: true, Message: "Customer added successfully"})
 	}
 }
 
@@ -81,13 +83,13 @@ func (s *Server) AddPayment() gin.HandlerFunc {
 		var js PaymentTable
 		err := context.BindJSON(&js)
 		if err != nil {
-			WrongParams(context)
+			log.Print(err)
 			return
 		}
 		s.DB.Save(&js)
 		context.JSON(http.StatusOK, struct {
-			Status  bool
-			Message string
+			Status  bool   `json:"status"`
+			Message string `json:"message"`
 		}{Status: true, Message: "Added Successfully"})
 	}
 }
@@ -110,8 +112,8 @@ func (s *Server) AddProduct() gin.HandlerFunc {
 		}
 		s.DB.Save(&js)
 		context.JSON(http.StatusOK, struct {
-			Status  bool
-			Message string
+			Status  bool   `json:"status"`
+			Message string `json:"message"`
 		}{Status: true, Message: "Added Successfully"})
 	}
 }
@@ -134,8 +136,8 @@ func (s *Server) AddOrder() gin.HandlerFunc {
 		}
 		s.DB.Save(&js)
 		context.JSON(http.StatusOK, struct {
-			Status  bool
-			Message string
+			Status  bool   `json:"status"`
+			Message string `json:"message"`
 		}{Status: true, Message: "Added Successfully"})
 	}
 }
@@ -158,8 +160,8 @@ func (s *Server) UpdateOrder() gin.HandlerFunc {
 		}
 		s.DB.Save(&js)
 		context.JSON(http.StatusOK, struct {
-			Status  bool
-			Message string
+			Status  bool   `json:"status"`
+			Message string `json:"message"`
 		}{Status: true, Message: "Updated Successfully"})
 	}
 }
@@ -174,8 +176,8 @@ func (s *Server) RemoveOrder() gin.HandlerFunc {
 		}
 		s.DB.Delete(&js)
 		context.JSON(http.StatusOK, struct {
-			Status  bool
-			Message string
+			Status  bool   `json:"status"`
+			Message string `json:"message"`
 		}{Status: true, Message: "Deleted Successfully"})
 	}
 }

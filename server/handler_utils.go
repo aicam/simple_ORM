@@ -16,7 +16,7 @@ func (s *Server) CheckAuthentication() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		authentication := context.GetHeader("Authorization")
 		var admin AdminTable
-		if !s.DB.Where(&AdminTable{Token: authentication}).First(&admin).RecordNotFound() {
+		if s.DB.Where(&AdminTable{Token: authentication}).First(&admin).RecordNotFound() {
 			context.JSON(http.StatusOK, struct {
 				Auth bool
 			}{Auth: false})
